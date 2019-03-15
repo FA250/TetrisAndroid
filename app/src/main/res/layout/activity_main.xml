@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
     <android.support.v7.widget.GridLayout
         android:id="@+id/Tablero"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="500dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="110dp"
@@ -23,40 +24,53 @@
 
     </android.support.v7.widget.GridLayout>
 
-    <ImageView
-        android:id="@+id/flechaderecha"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        android:alpha="0.6"
-        android:src="@drawable/flechaderecha"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
-    <ImageView
-        android:id="@+id/flechaabajo"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        android:alpha="0.6"
-        android:src="@drawable/flechaabajo"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/flechaderecha"
-        app:layout_constraintStart_toEndOf="@+id/flechaizquierda" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
-    <ImageView
-        android:id="@+id/flechaizquierda"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginBottom="10dp"
-        android:alpha="0.6"
-        android:src="@drawable/flechaizquierda"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <ImageView
+            android:id="@+id/flechaizquierda"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="8dp"
+            android:alpha="0.6"
+            android:onClick="BTNClickIzquierda"
+            android:src="@drawable/flechaizquierda"            />
+
+        <ImageView
+            android:id="@+id/flechaabajo"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:alpha="0.6"
+            android:onClick="BTNClickAbajo"
+            android:src="@drawable/flechaabajo"
+            tools:layout_editor_absoluteY="623dp" />
+
+        <ImageView
+            android:id="@+id/flechavuelta"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="8dp"
+            android:alpha="0.6"
+            android:onClick="BTNClickVuelta"
+            android:src="@drawable/flechavuelta"/>
 
 
-</android.support.constraint.ConstraintLayout>
+
+        <ImageView
+            android:id="@+id/flechaderecha"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:alpha="0.6"
+            android:onClick="BTNClickDerecha"
+            android:src="@drawable/flechaderecha"
+            app:layout_constraintStart_toEndOf="@+id/flechavuelta"
+            tools:layout_editor_absoluteY="623dp" />
+
+    </LinearLayout>
+
+
+</LinearLayout>
