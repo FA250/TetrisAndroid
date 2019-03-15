@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
                 {1,1}}
             };
 
-    int [][][] RotacionPieza1=
+    int [][][] RotacionPieza0=
             {{      {0,1,0},
                     {1,1,1}},
 
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
                     {1,1},
                     {0,1}}};
 
-    int [][][] RotacionPieza2=
+    int [][][] RotacionPieza1=
             {{  {1,0,0},
                 {1,1,1}},
 
@@ -74,7 +74,48 @@ public class MainActivity extends AppCompatActivity {
                 {0,0,1}},
 
             {   {0,1},
-                {}}};
+                {0,1},
+                {1,1}}};
+
+    int [][][] RotacionPieza2=
+            {{{1,1,1,1}},
+
+                {   {1},
+                    {1},
+                    {1},
+                    {1}}};
+
+    int [][][] RotacionPieza3=
+            {{  {0,0,1},
+                {1,1,1}},
+
+            {   {1,0},
+                {1,0},
+                {1,1}},
+
+            {   {1,1,1},
+                {1,0,0}},
+
+            {   {1,1},
+                {0,1},
+                {0,1}}};
+
+    int [][][] RotacionPieza4=
+            {{  {1,1,0},
+                {0,1,1}},
+
+            {   {0,1},
+                {1,1},
+                {1,0}}};
+
+    int [][][] RotacionPieza5=
+            {{  {0,1,1},
+                {1,1,0}},
+
+            {   {1,0},
+                {1,1},
+                {0,1}}};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,10 +199,10 @@ public class MainActivity extends AppCompatActivity {
 
         NumPiezaActual=numPieza;
         PiezaActual=pieza;
-        columnaPiezaActual = (cantColumnas / 2) - (pieza.length / 2);
+        columnaPiezaActual = (cantColumnas / 2) - (pieza.length-1 / 2);
         filaPiezaActual = 1;
         if(VerificacionPiezaMovimiento(PiezaActual,filaPiezaActual,columnaPiezaActual,1) && VerificacionPiezaMovimiento(PiezaActual,filaPiezaActual,columnaPiezaActual,2) && VerificacionPiezaMovimiento(PiezaActual,filaPiezaActual,columnaPiezaActual,3))  {
-            DibujarPieza(pieza, -1, -1, -1, -1);
+            MoverPieza(pieza, -1, -1, -1, -1);
             CaidaAutomaticaPieza();
         }
         else
@@ -175,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
         final Runnable caidaPieza = new Runnable() {
             @Override
             public void run() {
-                handler.postDelayed(this, 1000);
+                handler.postDelayed(this, 1500);
 
                 if(!MoverPiezaAbajo(PiezaActual)) {//Verificacion para move abajo
                     PiezaActiva=false;
@@ -191,7 +232,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void Derrota() {
+    private void Derrota()
+    {
+        MoverPieza(PiezaActual, -1, -1, -1, -1);
         PiezaActiva=false;
         //Se crea un cuadro de dialogo el cual espera que el usuario este listo para comenzar el juego
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -250,23 +293,12 @@ public class MainActivity extends AppCompatActivity {
         return resultado;
     }
 
-    //Muestra la pieza y cambia matriz de control
-    public void DibujarPieza(int[][] pieza, int filaInicial, int columnaInicial, int filaAnterior, int columnaAnterior) {
-        //En caso que sea una pieza nueva
-        boolean BorrarAnt=true;
-        if (filaAnterior == -1 && columnaAnterior == -1) {
-            columnaInicial = (cantColumnas / 2) - (pieza.length / 2);
-            filaInicial = 1;
-            BorrarAnt=false;
-        }
-
-
+    public void BorrarPieza(int[][] pieza,int filaAnterior, int columnaAnterior){
         boolean posicionInicialColumna = false, posicionInicialFila = false, seguirCiclo=true;
         int contHijos = 0, contFilaPieza=0, contColumnaPieza=0;
 
-
         //Borrar pieza anterior
-        if(BorrarAnt){
+
             //Dibujar pieza y actualizar matriz
             posicionInicialColumna = false; posicionInicialFila = false; seguirCiclo=true;
             contHijos = 0; contFilaPieza=0; contColumnaPieza=0;
@@ -294,11 +326,80 @@ public class MainActivity extends AppCompatActivity {
                 if(posicionInicialFila)
                     contFilaPieza++;
             }
-        }
+    }
+
+    public void BorrarPosicionPieza(int[][] pieza,int filaAnterior, int columnaAnterior){
+        boolean posicionInicialColumna = false, posicionInicialFila = false, seguirCiclo=true;
+        int contHijos = 0, contFilaPieza=0, contColumnaPieza=0;
+
+        //Borrar pieza anterior
 
         //Dibujar pieza y actualizar matriz
         posicionInicialColumna = false; posicionInicialFila = false; seguirCiclo=true;
         contHijos = 0; contFilaPieza=0; contColumnaPieza=0;
+        for (int i = 0; i < MatrizTetris.length && seguirCiclo; i++) {
+            for (int j = 0; j < MatrizTetris[i].length && seguirCiclo; j++) {
+                if (i == filaAnterior)
+                    posicionInicialFila = true;
+                if(j == columnaAnterior)
+                    posicionInicialColumna=true;
+
+                if (posicionInicialFila && posicionInicialColumna) {
+                    if (contFilaPieza < pieza.length && contColumnaPieza < pieza[contFilaPieza].length && pieza[contFilaPieza][contColumnaPieza] == 1) {
+                        MatrizTetris[i][j] = 0;
+                    }
+                    else if(contFilaPieza==pieza.length){
+                        seguirCiclo=false;
+                    }
+                    contColumnaPieza++;
+                }
+                contHijos++;
+            }
+            posicionInicialColumna=false;
+            contColumnaPieza=0;
+            if(posicionInicialFila)
+                contFilaPieza++;
+        }
+
+    }
+
+    public void DibujarPosicionPieza(int[][] pieza, int filaInicial, int columnaInicial){
+        //Dibujar pieza y actualizar matriz
+        boolean posicionInicialColumna = false, posicionInicialFila = false, seguirCiclo=true;
+        int contHijos = 0, contFilaPieza=0, contColumnaPieza=0;
+        for (int i = 0; i < MatrizTetris.length && seguirCiclo; i++) {
+            for (int j = 0; j < MatrizTetris[i].length && seguirCiclo; j++) {
+                if (i == filaInicial)
+                    posicionInicialFila = true;
+                if(j == columnaInicial)
+                    posicionInicialColumna=true;
+
+                if (posicionInicialFila && posicionInicialColumna) {
+                    if (contFilaPieza < pieza.length && contColumnaPieza < pieza[contFilaPieza].length && pieza[contFilaPieza][contColumnaPieza] == 1) {
+                        MatrizTetris[i][j] = 1;
+                    }
+                    else if(contFilaPieza==pieza.length){
+                        seguirCiclo=false;
+                    }
+                    contColumnaPieza++;
+                }
+                contHijos++;
+            }
+            posicionInicialColumna=false;
+            contColumnaPieza=0;
+            if(posicionInicialFila)
+                contFilaPieza++;
+        }
+
+        //Actualizar posicion pieza
+        filaPiezaActual=filaInicial;
+        columnaPiezaActual=columnaInicial;
+    }
+
+    public void DibujarPieza(int[][] pieza, int filaInicial, int columnaInicial){
+        //Dibujar pieza y actualizar matriz
+        boolean posicionInicialColumna = false, posicionInicialFila = false, seguirCiclo=true;
+        int contHijos = 0, contFilaPieza=0, contColumnaPieza=0;
         for (int i = 0; i < MatrizTetris.length && seguirCiclo; i++) {
             for (int j = 0; j < MatrizTetris[i].length && seguirCiclo; j++) {
                 if (i == filaInicial)
@@ -327,7 +428,164 @@ public class MainActivity extends AppCompatActivity {
         //Actualizar posicion pieza
         filaPiezaActual=filaInicial;
         columnaPiezaActual=columnaInicial;
+    }
 
+    //Muestra la pieza y cambia matriz de control
+    public void MoverPieza(int[][] pieza, int filaInicial, int columnaInicial, int filaAnterior, int columnaAnterior) {
+        //En caso que sea una pieza nueva
+        boolean BorrarAnt=true;
+        if (filaAnterior == -1 && columnaAnterior == -1) {
+            columnaInicial = (cantColumnas / 2) - (pieza.length-1 / 2);
+            filaInicial = 1;
+            BorrarAnt=false;
+        }
+
+        //Borrar pieza anterior
+        if(BorrarAnt){
+           BorrarPieza(pieza,filaAnterior, columnaAnterior);
+        }
+
+        //Dibujar y actualizar matriz nueva posicion
+        DibujarPieza(pieza, filaInicial, columnaInicial);
+
+    }
+
+    public boolean ValidarRotacionPieza(int[][] pieza, int filaActual, int columnaActual,int numPieza){
+        boolean resultadoValidacion=true;
+        if(!(numPieza==6)){
+            int[][] nuevaRotacionPieza=new int[][]{};
+            int[][][] rotacionesPiezaActual= new int[][][]{};
+
+            //Encontrar rotaciones de la pieza actual
+            if(numPieza==0)
+                rotacionesPiezaActual=RotacionPieza0;
+            else if(numPieza==1)
+                rotacionesPiezaActual=RotacionPieza1;
+            else if(numPieza==2)
+                rotacionesPiezaActual=RotacionPieza2;
+            else if(numPieza==3)
+                rotacionesPiezaActual=RotacionPieza3;
+            else if(numPieza==4)
+                rotacionesPiezaActual=RotacionPieza4;
+            else if(numPieza==5)
+                rotacionesPiezaActual=RotacionPieza5;
+
+            for(int i=0; i<rotacionesPiezaActual.length;i++){
+                if(rotacionesPiezaActual[i].length==pieza.length && rotacionesPiezaActual[i][0].length==pieza[0].length && rotacionesPiezaActual[i][0][0]==pieza[0][0]){//No logre encontrar como comparar 2 matrices por lo que se volvio complicado este if
+                    if(rotacionesPiezaActual[i][0].length>1 && pieza[0].length>1){
+                        if(rotacionesPiezaActual[i][0][1]==pieza[0][1]){
+                            if(i<rotacionesPiezaActual.length-1)
+                                nuevaRotacionPieza=rotacionesPiezaActual[i+1];
+                            else
+                                nuevaRotacionPieza=rotacionesPiezaActual[0];
+                        }
+                    }
+                    else if(rotacionesPiezaActual[i].length>1 && pieza.length>1){
+                        if(rotacionesPiezaActual[i][1]==pieza[1]){
+                            if(i<rotacionesPiezaActual.length-1)
+                                nuevaRotacionPieza=rotacionesPiezaActual[i+1];
+                            else
+                                nuevaRotacionPieza=rotacionesPiezaActual[0];
+                        }
+                        else{
+                            if(i<rotacionesPiezaActual.length-1)
+                                nuevaRotacionPieza=rotacionesPiezaActual[i+1];
+                            else
+                                nuevaRotacionPieza=rotacionesPiezaActual[0];
+                        }
+                    }
+
+                }
+            }
+
+            BorrarPosicionPieza(pieza,filaActual,columnaActual);
+
+            boolean posicionInicialColumna = false, posicionInicialFila = false, seguirCiclo=true;
+            int contHijos = 0, contFilaPieza=0, contColumnaPieza=0;
+            for (int i = 0; i < MatrizTetris.length && seguirCiclo; i++) {
+                for (int j = 0; j < MatrizTetris[i].length && seguirCiclo; j++) {
+                    if (i == filaActual)
+                        posicionInicialFila = true;
+                    if(j == columnaActual)
+                        posicionInicialColumna=true;
+
+                    if (posicionInicialFila && posicionInicialColumna) {
+                        if (contFilaPieza < nuevaRotacionPieza.length && contColumnaPieza < nuevaRotacionPieza[contFilaPieza].length && nuevaRotacionPieza[contFilaPieza][contColumnaPieza] == 1) {
+                            if(MatrizTetris[i][j] != 0){
+                                resultadoValidacion=false;
+                                DibujarPosicionPieza(pieza,filaActual,columnaActual);
+                            }
+                        }
+                        else if(contFilaPieza==nuevaRotacionPieza.length){
+                            seguirCiclo=false;
+                        }
+                        contColumnaPieza++;
+                    }
+                    contHijos++;
+                }
+                posicionInicialColumna=false;
+                contColumnaPieza=0;
+                if(posicionInicialFila)
+                    contFilaPieza++;
+            }
+        }
+
+        return resultadoValidacion;
+    }
+
+    public void RealizarRotacionPieza(int[][] pieza, int filaActual, int columnaActual,int numPieza){
+        if(!(numPieza==6)){
+            //Borra la pieza anterior
+            BorrarPieza(pieza,filaActual,columnaActual);
+
+            int[][] nuevaRotacionPieza=new int[][]{};
+            int[][][] rotacionesPiezaActual= new int[][][]{};
+
+            //Encontrar rotaciones de la pieza actual
+            if(numPieza==0)
+                rotacionesPiezaActual=RotacionPieza0;
+            else if(numPieza==1)
+                rotacionesPiezaActual=RotacionPieza1;
+            else if(numPieza==2)
+                rotacionesPiezaActual=RotacionPieza2;
+            else if(numPieza==3)
+                rotacionesPiezaActual=RotacionPieza3;
+            else if(numPieza==4)
+                rotacionesPiezaActual=RotacionPieza4;
+            else if(numPieza==5)
+                rotacionesPiezaActual=RotacionPieza5;
+
+            for(int i=0; i<rotacionesPiezaActual.length;i++){
+                if(rotacionesPiezaActual[i].length==pieza.length && rotacionesPiezaActual[i][0].length==pieza[0].length && rotacionesPiezaActual[i][0][0]==pieza[0][0]){//No logre encontrar como comparar 2 matrices por lo que se volvio complicado este if
+                    if(rotacionesPiezaActual[i][0].length>1 && pieza[0].length>1){
+                        if(rotacionesPiezaActual[i][0][1]==pieza[0][1]){
+                            if(i<rotacionesPiezaActual.length-1)
+                                nuevaRotacionPieza=rotacionesPiezaActual[i+1];
+                            else
+                                nuevaRotacionPieza=rotacionesPiezaActual[0];
+                        }
+                    }
+                    else if(rotacionesPiezaActual[i].length>1 && pieza.length>1){
+                        if(rotacionesPiezaActual[i][1]==pieza[1]){
+                            if(i<rotacionesPiezaActual.length-1)
+                                nuevaRotacionPieza=rotacionesPiezaActual[i+1];
+                            else
+                                nuevaRotacionPieza=rotacionesPiezaActual[0];
+                        }
+                        else{
+                            if(i<rotacionesPiezaActual.length-1)
+                                nuevaRotacionPieza=rotacionesPiezaActual[i+1];
+                            else
+                                nuevaRotacionPieza=rotacionesPiezaActual[0];
+                        }
+                    }
+
+                }
+            }
+
+            PiezaActual=nuevaRotacionPieza;
+            DibujarPieza(nuevaRotacionPieza,filaActual,columnaActual);
+        }
     }
 
     public void EliminarLinea(){
@@ -370,7 +628,7 @@ public class MainActivity extends AppCompatActivity {
     public Boolean MoverPiezaAbajo(int[][] pieza){
         Boolean resultadoVerificacion= VerificacionPiezaMovimiento(pieza, filaPiezaActual + 1, columnaPiezaActual,1);
         if(PiezaActiva && resultadoVerificacion) {
-            DibujarPieza(pieza, filaPiezaActual + 1, columnaPiezaActual,filaPiezaActual,columnaPiezaActual);
+            MoverPieza(pieza, filaPiezaActual + 1, columnaPiezaActual,filaPiezaActual,columnaPiezaActual);
         }
 
         return resultadoVerificacion;
@@ -378,13 +636,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void MoverPiezaDerecha(int[][] pieza){
         if(PiezaActiva && VerificacionPiezaMovimiento(pieza, filaPiezaActual, columnaPiezaActual+1,2)) {
-            DibujarPieza(pieza, filaPiezaActual, columnaPiezaActual+1,filaPiezaActual,columnaPiezaActual);
+            MoverPieza(pieza, filaPiezaActual, columnaPiezaActual+1,filaPiezaActual,columnaPiezaActual);
         }
     }
 
     public void MoverPiezaIzquierda(int[][] pieza){
         if(PiezaActiva && VerificacionPiezaMovimiento(pieza, filaPiezaActual, columnaPiezaActual-1,3)) {
-            DibujarPieza(pieza, filaPiezaActual, columnaPiezaActual-1,filaPiezaActual,columnaPiezaActual);
+            MoverPieza(pieza, filaPiezaActual, columnaPiezaActual-1,filaPiezaActual,columnaPiezaActual);
     }
     }
 
@@ -399,7 +657,8 @@ public class MainActivity extends AppCompatActivity {
         MoverPiezaIzquierda(PiezaActual);
     }
     public void BTNClickVuelta(View view) {
-        //TODO
+        if(ValidarRotacionPieza(PiezaActual,filaPiezaActual,columnaPiezaActual,NumPiezaActual))
+            RealizarRotacionPieza(PiezaActual,filaPiezaActual,columnaPiezaActual,NumPiezaActual);
     }
 
 
