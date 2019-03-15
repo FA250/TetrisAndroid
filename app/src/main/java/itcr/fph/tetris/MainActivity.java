@@ -1,24 +1,17 @@
 package itcr.fph.tetris;
 
-import android.app.ActionBar;
+
 import android.content.DialogInterface;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.support.v7.widget.GridLayout;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
-
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class MainActivity extends AppCompatActivity {
     int[][] MatrizTetris, PiezaActual;
@@ -117,6 +110,8 @@ public class MainActivity extends AppCompatActivity {
                 {0,1}}};
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -209,9 +204,9 @@ public class MainActivity extends AppCompatActivity {
             Derrota();
     }
 
+
     public void CaidaAutomaticaPieza(){
         //Mediante el runnable la pieza va cayendo automaticamente cada segundo
-        final ExecutorService executorService = Executors.newSingleThreadExecutor();
         final Handler handler = new Handler();
         final Runnable caidaPieza = new Runnable() {
             @Override
@@ -226,10 +221,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
-
         handler.post(caidaPieza);
-
-
     }
 
     private void Derrota()
@@ -675,10 +667,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-
-
-//Toast.makeText(getApplicationContext(),"Prueba",Toast.LENGTH_LONG).show();
 
 
 }
