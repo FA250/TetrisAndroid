@@ -164,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
         //Se crea un cuadro de dialogo el cual espera que el usuario este listo para comenzar el juego
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
+        builder.setCancelable(false);
         builder.setMessage("Presione comenzar cuando este listo")
                 .setTitle("Nuevo Juego");
 
@@ -231,6 +232,7 @@ public class MainActivity extends AppCompatActivity {
         //Se crea un cuadro de dialogo el cual espera que el usuario este listo para comenzar el juego
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
+        builder.setCancelable(false);
         builder.setMessage("Ha perdido!")
                 .setTitle("Derrota");
 
@@ -257,18 +259,33 @@ public class MainActivity extends AppCompatActivity {
                     posicionInicialColumna=true;
 
                 if (posicionInicialFila && posicionInicialColumna) {
-                    if (tipo == 1 && contFilaPieza + 1 == pieza.length && contColumnaPieza < pieza[contFilaPieza].length && pieza[contFilaPieza][contColumnaPieza] == 1)
-                        tipoCorrecto=true;
-                    else if(tipo==2 && contFilaPieza < pieza.length && contColumnaPieza+1 == pieza[contFilaPieza].length && pieza[contFilaPieza][contColumnaPieza] == 1)
-                        tipoCorrecto=true;
-                    else if(tipo==3 && contFilaPieza < pieza.length && contColumnaPieza-1 == -1 && pieza[contFilaPieza][contColumnaPieza] == 1)
-                        tipoCorrecto=true;
+                    if (tipo == 1 && contFilaPieza+1 <= pieza.length && contColumnaPieza < pieza[contFilaPieza].length && pieza[contFilaPieza][contColumnaPieza] == 1)
+                        if(contFilaPieza+1<pieza.length){
+                            if(pieza[contFilaPieza+1][contColumnaPieza] == 0)
+                                tipoCorrecto=true;
+                        }
+                        else
+                            tipoCorrecto=true;
+                    else if(tipo==2 && contFilaPieza < pieza.length && contColumnaPieza+1 <= pieza[contFilaPieza].length && pieza[contFilaPieza][contColumnaPieza] == 1)
+                        if(contColumnaPieza+1<pieza[contFilaPieza].length){
+                            if(pieza[contFilaPieza][contColumnaPieza+1] == 0)
+                                tipoCorrecto=true;
+                        }
+                        else
+                            tipoCorrecto=true;
+                    else if(tipo==3 && contFilaPieza < pieza.length && contColumnaPieza-1 >= -1 && contColumnaPieza < pieza[contFilaPieza].length && pieza[contFilaPieza][contColumnaPieza] == 1)
+                        if(contColumnaPieza-1>=0){
+                            if(pieza[contFilaPieza][contColumnaPieza-1] == 0)
+                                tipoCorrecto=true;
+                        }
+                        else
+                            tipoCorrecto=true;
 
                     if(tipoCorrecto){
 
                             if (MatrizTetris[i][j] != 0)
                                 resultado = false;
-                        } else if (contFilaPieza == pieza.length) {
+                        } else if (contFilaPieza == pieza.length && contColumnaPieza==pieza.length) {
                             seguirCiclo = false;
                         }
                         contColumnaPieza++;
@@ -582,12 +599,15 @@ public class MainActivity extends AppCompatActivity {
 
     public void EliminarLinea(){
         //Verifica y elimina las lineas completas en la matriz de control
-        int contColumnas;
+        int contColumnas,contVacios;
         for(int i=MatrizTetris.length-1;i>0;i--){
             contColumnas=0;
+            contVacios=0;
             for(int j=MatrizTetris[i].length-1;j>0;j--){
                 if(MatrizTetris[i][j] == 1)
                     contColumnas++;
+                else
+                    contVacios++;
             }
             if(contColumnas==cantColumnas-2){
                 for(int p=i;p>1;p--) {
@@ -599,18 +619,25 @@ public class MainActivity extends AppCompatActivity {
                 }
                 i++;
             }
+            else if(contVacios==cantColumnas)
+                i=-1;
         }
 
         //Actualiza el tablero visualmente
         int contHijos=0;
         for(int i=0;i<MatrizTetris.length;i++){
+            //contVacios=0;
             for(int j=0;j<MatrizTetris[i].length;j++){
                 if(MatrizTetris[i][j] == 1)
                     CambiarEstadoCelda(Tablero.getChildAt(contHijos), true);
-                else if(MatrizTetris[i][j] == 0)
+                else if(MatrizTetris[i][j] == 0) {
                     CambiarEstadoCelda(Tablero.getChildAt(contHijos), false);
-                else
-                    ((ImageView)Tablero.getChildAt(contHijos)).setImageResource(R.drawable.cuadronegro);
+                    //contVacios++;
+                }
+                else {
+                    ((ImageView) Tablero.getChildAt(contHijos)).setImageResource(R.drawable.cuadronegro);
+                    //contVacios++;
+                }
                 contHijos++;
             }
         }
@@ -652,9 +679,6 @@ public class MainActivity extends AppCompatActivity {
         if(ValidarRotacionPieza(PiezaActual,filaPiezaActual,columnaPiezaActual,NumPiezaActual))
             RealizarRotacionPieza(PiezaActual,filaPiezaActual,columnaPiezaActual,NumPiezaActual);
     }
-
-
-
 
 
     public void CambiarEstadoCelda(View celda,boolean estado){
